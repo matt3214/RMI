@@ -27,7 +27,7 @@ public class LastGetterClient {
 
 				System.out.println("Register new student by typing \"[register]\"\ntype a first name to get last names from server\ntype \"[list]\" to list all names on server\nor type a single . to quit");
 				behavior = input.nextLine();
-				if
+				//if
 				if(behavior.contains("[register]")){
 					System.out.println("Type the students first name:");
 					String f = input.nextLine();

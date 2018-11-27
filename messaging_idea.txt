@@ -1,0 +1,24 @@
+Interface: has methods SendMessage(String) and String[] getMessages(), Boolean register(string username) and 
+
+Client: 
+    1. Start off by registering ID with the server (for example, setting a username)
+        - if server returns false, then notify user that username is taken, otherwise, success - STORE THE CHOSEN USERNAME IN GLOBAL VARIABLE
+    2. provide the user with options:
+        - send message
+        - receive messages
+        - change username?
+        - quit
+
+Server:
+    **Create message class that stores: fromUser, toUser, and messageStr
+    1. register(username)
+        - ensure that username is not taken
+            - if it is, return false
+        - add username to list or map - the map will be {String username, Message[] messages}
+        - return true
+    2. sendMessage(String fromUsername, String toUsername, String message)
+        - create new message obj and store this data in it. Then add the obj to the messages list for toUsername
+    3. getMessages(String username): returns list of strings?
+        - get all messages in the list corresponding username
+        - extract the 'fromUsername' and the messageStr, and put them into a list of "[fromUsername]:[messageStr]"
+        - return the list
