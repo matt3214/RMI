@@ -6,8 +6,8 @@ import java.rmi.RemoteException;
 
 public interface IMessage extends Remote {
 
-    Bool registerUsername(String username) throws RemoteException;
-    Bool sendMessage(String fromUsername, String toUsername, String message) throws RemoteException;
+    boolean registerUsername(String username) throws RemoteException;
+    boolean sendMessage(String fromUsername, String toUsername, String message) throws RemoteException;
     String[] getMessages(String toUsername) throws RemoteException;
 
 	// String[] getLastName(String first) throws RemoteException;
