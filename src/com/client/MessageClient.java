@@ -11,12 +11,12 @@ import javax.swing.JOptionPane;
 public class MessageClient {
 	private static Scanner input = new Scanner(System.in);
 	public static String username;
-
+	public static String host="155.246.171.40";
 	public static void main(String arg[]) {
 
 		try {
 			// Getting the registry
-			Registry registry = LocateRegistry.getRegistry(null);
+			Registry registry = LocateRegistry.getRegistry(host,1099);
 
 			System.out.println(registry.list().length);
 
