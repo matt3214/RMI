@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 public class MessageClient {
 	private static Scanner input = new Scanner(System.in);
 	public static String username;
-	public static String host = "155.246.171.71";
+	public static String host = "155.246.204.73 ";
 
 	public static void main(String arg[]) {
 
@@ -32,18 +32,22 @@ public class MessageClient {
 			IMessage stub = (IMessage) registry.lookup("MessageServer");
 
 			System.out.println(stub.toString());
-			boolean taken = false;
+			int taken = -1;
 
 			do {
 				System.out.println("enter your username:");
 				username = input.nextLine();
 				taken = stub.registerUsername(username);
-				if (taken) {
+				if (taken == -1) {
 					System.out.print("username already taken, please ");
+				}else if(taken==1) {
+					System.out.print("Welcome back ");
+				}else {
+					System.out.print("Welcome ");
 				}
-			} while (taken);
+			} while (taken != 0 && taken != 1);
 
-			System.out.println("Welcome to the chat client!");
+			System.out.println(" to the chat client " + username + "!");
 
 			String behavior = "";
 
@@ -72,7 +76,7 @@ public class MessageClient {
 							System.out.println(name);
 						}
 					} else {
-						//Must have been a username
+						// Must have been a username
 						System.out.println("Please enter your message");
 
 						if (stub.sendMessage(username, behavior, input.nextLine())) {
@@ -84,7 +88,7 @@ public class MessageClient {
 				} else {
 					String[] messagesRecieved = stub.getMessages(username);
 					int[] ids = new int[messagesRecieved.length];
-					
+
 					for (int i = 0; i < messagesRecieved.length; i++) {
 						String[] messageSplit = messagesRecieved[i].split("[|]");
 						System.out.println(messageSplit[0]);
@@ -95,7 +99,7 @@ public class MessageClient {
 				}
 
 			} while (running);
-
+			stub.logOff(username);
 			// System.out.println("Remote method invoked");
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
