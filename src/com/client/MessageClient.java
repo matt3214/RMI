@@ -23,14 +23,14 @@ public class MessageClient {
 //			}
 
 			// Getting the registry
-			Registry registry = LocateRegistry.getRegistry(host,1099);
-			
+			Registry registry = LocateRegistry.getRegistry(host, 1099);
+
 			System.out.println(registry.list().length);
 			System.out.println(registry.list()[0]);
 
 			// Looking up the registry for the remote object
 			IMessage stub = (IMessage) registry.lookup("MessageServer");
-			
+
 			System.out.println(stub.toString());
 			boolean taken = false;
 
@@ -53,6 +53,7 @@ public class MessageClient {
 				if (doInstructions) {
 					System.out.println("Check for messages by hitting enter");
 					System.out.println("or type a username to send a message to");
+					System.out.println("or type /list to display a list of all connected users");
 					System.out.println("or type a single . to quit");
 					doInstructions = false;
 				}
@@ -65,12 +66,20 @@ public class MessageClient {
 
 				if (behavior.length() > 0) {
 					doInstructions = true;
-					System.out.println("Please enter your message");
-
-					if (stub.sendMessage(username, behavior, input.nextLine())) {
-						System.out.println("Bon Voyage!");
+					if (behavior.contains("/list")) {
+						System.out.println("Current users connected: ");
+						for (String name : stub.getNameList()) {
+							System.out.println(name);
+						}
 					} else {
-						System.out.println("Message not sent, username: " + behavior + " not found");
+						//Must have been a username
+						System.out.println("Please enter your message");
+
+						if (stub.sendMessage(username, behavior, input.nextLine())) {
+							System.out.println("Bon Voyage!");
+						} else {
+							System.out.println("Message not sent, username: " + behavior + " not found");
+						}
 					}
 				} else {
 					String[] messagesRecieved = stub.getMessages(username);

@@ -11,7 +11,7 @@ import java.util.Map;
 import com.interfaces.IMessage;
 
 public class MessageServer implements IMessage {
-
+	
 	class Message {
 		private String toUsername;
 		private String fromUsername;
@@ -42,7 +42,7 @@ public class MessageServer implements IMessage {
 	public Map<String, ArrayList<Message>> usernameList = new HashMap<String, ArrayList<Message>>();
 
 	public boolean registerUsername(String username) throws RemoteException {
-
+		
 		for (String entry : usernameList.keySet()) {
 			if (entry.equals(username)) {
 				return true;
@@ -50,9 +50,16 @@ public class MessageServer implements IMessage {
 		}
 
 		usernameList.put(username, new ArrayList<Message>());
+		
 		System.out.println("New User: " + username);
+		
 		return false;
 	}
+	
+	public String[] getNameList() throws RemoteException{
+		return usernameList.keySet().toArray(new String[0]);
+	}
+	
 	// Does that user exist already, return true
 
 	/**
