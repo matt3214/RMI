@@ -11,18 +11,27 @@ import javax.swing.JOptionPane;
 public class MessageClient {
 	private static Scanner input = new Scanner(System.in);
 	public static String username;
-	public static String host="155.246.171.40";
+	public static String host = "155.246.171.40";
+
 	public static void main(String arg[]) {
 
 		try {
+//			System.setProperty("java.security.policy", "file:///test.policy");
+//			
+//			if (System.getSecurityManager() == null) {
+//				System.setSecurityManager(new SecurityManager());
+//			}
+
 			// Getting the registry
 			Registry registry = LocateRegistry.getRegistry(host,1099);
-
+			
 			System.out.println(registry.list().length);
+			System.out.println(registry.list()[0]);
 
 			// Looking up the registry for the remote object
 			IMessage stub = (IMessage) registry.lookup("MessageServer");
-
+			
+			System.out.println(stub.toString());
 			boolean taken = false;
 
 			do {
@@ -60,15 +69,15 @@ public class MessageClient {
 
 					if (stub.sendMessage(username, behavior, input.nextLine())) {
 						System.out.println("Bon Voyage!");
-					}else {
+					} else {
 						System.out.println("Message not sent, username: " + behavior + " not found");
 					}
 				} else {
 					String[] messagesRecieved = stub.getMessages(username);
-					for(int i =0;i<messagesRecieved.length;i++) {
+					for (int i = 0; i < messagesRecieved.length; i++) {
 						System.out.println(messagesRecieved[i]);
 					}
-					
+
 				}
 
 			} while (running);

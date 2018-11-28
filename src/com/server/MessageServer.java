@@ -80,12 +80,15 @@ public class MessageServer implements IMessage {
 			returnVal[i] = messages[i].fromUsername + ": " + messages[i].getMessage();
 		}
 		usernameList.get(destinationUsername).clear();
-		
+
 		return returnVal;
 	}
 
 	public static void main(String args[]) {
 		try {
+
+			System.setProperty("java.rmi.server.hostname", "155.246.171.40");
+			
 			MessageServer obj = new MessageServer();
 
 			// Create stub
