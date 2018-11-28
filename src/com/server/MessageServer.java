@@ -45,15 +45,20 @@ public class MessageServer implements IMessage {
 
 		for (String entry : usernameList.keySet()) {
 			if (entry.equals(username)) {
-				return false;
+				return true;
 			}
 		}
 
 		usernameList.put(username, new ArrayList<Message>());
-		return true;
+		System.out.println("New User: " + username);
+		return false;
 	}
-	// Does that user exist, return true
+	// Does that user exist already, return true
 
+	/**
+	 * 
+	 * @return true if message was successfully stored
+	 */
 	public boolean sendMessage(String fromUsername, String toUsername, String message) throws RemoteException {
 
 		for (String usr : usernameList.keySet()) {
@@ -68,8 +73,15 @@ public class MessageServer implements IMessage {
 		return false;
 	}
 
-	public String[] getMessages(String toUsername) throws RemoteException {
-		return null;
+	public String[] getMessages(String destinationUsername) throws RemoteException {
+		Message[] messages = usernameList.get(destinationUsername).toArray(new Message[0]);
+		String[] returnVal = new String[messages.length];
+		for (int i = 0; i < messages.length; i++) {
+			returnVal[i] = messages[i].fromUsername + ": " + messages[i].getMessage();
+		}
+		usernameList.get(destinationUsername).clear();
+		
+		return returnVal;
 	}
 
 	public static void main(String args[]) {
