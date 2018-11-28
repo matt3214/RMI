@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 public class MessageClient {
 	private static Scanner input = new Scanner(System.in);
 	public static String username;
-	public static String host = "155.246.171.40";
+	public static String host = "155.246.171.71";
 
 	public static void main(String arg[]) {
 
@@ -83,9 +83,14 @@ public class MessageClient {
 					}
 				} else {
 					String[] messagesRecieved = stub.getMessages(username);
+					int[] ids = new int[messagesRecieved.length];
+					
 					for (int i = 0; i < messagesRecieved.length; i++) {
-						System.out.println(messagesRecieved[i]);
+						String[] messageSplit = messagesRecieved[i].split("[|]");
+						System.out.println(messageSplit[0]);
+						ids[i] = Integer.parseInt(messageSplit[1]);
 					}
+					stub.ack(username, ids);
 
 				}
 

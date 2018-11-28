@@ -11,16 +11,22 @@ import java.util.Map;
 import com.interfaces.IMessage;
 
 public class MessageServer implements IMessage {
+
 	
+
 	class Message {
 		private String toUsername;
 		private String fromUsername;
 		private String messageStr;
+		private int uid;
+		private long timestamp;
 
-		public Message(String fromUsername, String toUsername, String messageStr) {
+		public Message(String fromUsername, String toUsername, String messageStr, int uid, long timestamp) {
 			this.toUsername = toUsername;
 			this.fromUsername = fromUsername;
 			this.messageStr = messageStr;
+			this.uid = uid;
+			this.timestamp = timestamp;
 		}
 
 		public String getToUsername() {
@@ -35,14 +41,24 @@ public class MessageServer implements IMessage {
 			return messageStr;
 		}
 
+		public int getUID() {
+			return uid;
+		}
+
+		public long getTimeStamp() {
+			return timestamp;
+		}
+
 	}
 
 	// public ArrayList<String> usernameList = new ArrayList<String>();
 
 	public Map<String, ArrayList<Message>> usernameList = new HashMap<String, ArrayList<Message>>();
+	public int idCount;
+	// So we have unique id's
 
 	public boolean registerUsername(String username) throws RemoteException {
-		
+
 		for (String entry : usernameList.keySet()) {
 			if (entry.equals(username)) {
 				return true;
@@ -50,16 +66,16 @@ public class MessageServer implements IMessage {
 		}
 
 		usernameList.put(username, new ArrayList<Message>());
-		
+
 		System.out.println("New User: " + username);
-		
+
 		return false;
 	}
-	
-	public String[] getNameList() throws RemoteException{
+
+	public String[] getNameList() throws RemoteException {
 		return usernameList.keySet().toArray(new String[0]);
 	}
-	
+
 	// Does that user exist already, return true
 
 	/**
@@ -72,11 +88,10 @@ public class MessageServer implements IMessage {
 			if (usr.equals(toUsername)) {
 				// need to make the usernamelist a map/dict - this way we can add it to the
 				// arrayList associated with the toUsername
-				usernameList.get(toUsername).add(new Message(fromUsername, toUsername, message));
+				usernameList.get(toUsername).add(new Message(fromUsername, toUsername, message,idCount++,System.currentTimeMillis()));
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -84,9 +99,8 @@ public class MessageServer implements IMessage {
 		Message[] messages = usernameList.get(destinationUsername).toArray(new Message[0]);
 		String[] returnVal = new String[messages.length];
 		for (int i = 0; i < messages.length; i++) {
-			returnVal[i] = messages[i].fromUsername + ": " + messages[i].getMessage();
+			returnVal[i] = messages[i].fromUsername + ": " + messages[i].getMessage() +"|"+ messages[i].uid;
 		}
-		usernameList.get(destinationUsername).clear();
 
 		return returnVal;
 	}
@@ -94,8 +108,8 @@ public class MessageServer implements IMessage {
 	public static void main(String args[]) {
 		try {
 
-			System.setProperty("java.rmi.server.hostname", "155.246.171.40");
-			
+			System.setProperty("java.rmi.server.hostname", "155.246.171.71");
+
 			MessageServer obj = new MessageServer();
 
 			// Create stub
@@ -111,13 +125,27 @@ public class MessageServer implements IMessage {
 			registry.bind("MessageServer", stub);
 
 			System.err.println("Server ready");
-
+			
 		} catch (Exception e) {
 			System.out.println("Messaging err: " + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
 		//
+	}
+
+	public void ack(String username, int[] ids) throws RemoteException {
+		ArrayList<Message> list = usernameList.get(username);
+		ArrayList<Message> remove = new ArrayList<Message>();
+		for(Message m: list) {
+			for(int i=0; i<ids.length;i++) {
+				if(ids[i] == m.uid) {
+					remove.add(m);
+				}
+			}
+		}
+		
+		list.removeAll(remove);
 	}
 
 }
