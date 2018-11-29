@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 public class MessageClient {
 	private static Scanner input = new Scanner(System.in);
 	public static String username;
-	public static String host = "155.246.204.73 ";
+	public static String host = "";
 
 	public static void main(String arg[]) {
 
@@ -22,11 +22,14 @@ public class MessageClient {
 //				System.setSecurityManager(new SecurityManager());
 //			}
 
+            System.out.println("Enter the server IP address:");
+            host = input.nextLine();
+
 			// Getting the registry
 			Registry registry = LocateRegistry.getRegistry(host, 1099);
 
-			System.out.println(registry.list().length);
-			System.out.println(registry.list()[0]);
+			//System.out.println(registry.list().length);
+			//System.out.println(registry.list()[0]);
 
 			// Looking up the registry for the remote object
 			IMessage stub = (IMessage) registry.lookup("MessageServer");
